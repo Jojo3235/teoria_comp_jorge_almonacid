@@ -1,0 +1,132 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> html
+Rule 1     html -> elementos
+Rule 2     elementos -> elemento elementos
+Rule 3     elementos -> elemento
+Rule 4     elemento -> link
+Rule 5     elemento -> image
+Rule 6     link -> A_OPEN A_CLOSE
+Rule 7     image -> IMG
+
+Terminals, with rules where they appear
+
+A_CLOSE              : 6
+A_OPEN               : 6
+IMG                  : 7
+error                : 
+
+Nonterminals, with rules where they appear
+
+elemento             : 2 3
+elementos            : 1 2
+html                 : 0
+image                : 5
+link                 : 4
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . html
+    (1) html -> . elementos
+    (2) elementos -> . elemento elementos
+    (3) elementos -> . elemento
+    (4) elemento -> . link
+    (5) elemento -> . image
+    (6) link -> . A_OPEN A_CLOSE
+    (7) image -> . IMG
+
+    A_OPEN          shift and go to state 6
+    IMG             shift and go to state 7
+
+    html                           shift and go to state 1
+    elementos                      shift and go to state 2
+    elemento                       shift and go to state 3
+    link                           shift and go to state 4
+    image                          shift and go to state 5
+
+state 1
+
+    (0) S' -> html .
+
+
+
+state 2
+
+    (1) html -> elementos .
+
+    $end            reduce using rule 1 (html -> elementos .)
+
+
+state 3
+
+    (2) elementos -> elemento . elementos
+    (3) elementos -> elemento .
+    (2) elementos -> . elemento elementos
+    (3) elementos -> . elemento
+    (4) elemento -> . link
+    (5) elemento -> . image
+    (6) link -> . A_OPEN A_CLOSE
+    (7) image -> . IMG
+
+    $end            reduce using rule 3 (elementos -> elemento .)
+    A_OPEN          shift and go to state 6
+    IMG             shift and go to state 7
+
+    elemento                       shift and go to state 3
+    elementos                      shift and go to state 8
+    link                           shift and go to state 4
+    image                          shift and go to state 5
+
+state 4
+
+    (4) elemento -> link .
+
+    A_OPEN          reduce using rule 4 (elemento -> link .)
+    IMG             reduce using rule 4 (elemento -> link .)
+    $end            reduce using rule 4 (elemento -> link .)
+
+
+state 5
+
+    (5) elemento -> image .
+
+    A_OPEN          reduce using rule 5 (elemento -> image .)
+    IMG             reduce using rule 5 (elemento -> image .)
+    $end            reduce using rule 5 (elemento -> image .)
+
+
+state 6
+
+    (6) link -> A_OPEN . A_CLOSE
+
+    A_CLOSE         shift and go to state 9
+
+
+state 7
+
+    (7) image -> IMG .
+
+    A_OPEN          reduce using rule 7 (image -> IMG .)
+    IMG             reduce using rule 7 (image -> IMG .)
+    $end            reduce using rule 7 (image -> IMG .)
+
+
+state 8
+
+    (2) elementos -> elemento elementos .
+
+    $end            reduce using rule 2 (elementos -> elemento elementos .)
+
+
+state 9
+
+    (6) link -> A_OPEN A_CLOSE .
+
+    A_OPEN          reduce using rule 6 (link -> A_OPEN A_CLOSE .)
+    IMG             reduce using rule 6 (link -> A_OPEN A_CLOSE .)
+    $end            reduce using rule 6 (link -> A_OPEN A_CLOSE .)
+
