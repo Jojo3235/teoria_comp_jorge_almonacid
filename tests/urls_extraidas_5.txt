@@ -1,0 +1,5 @@
+[Enlaces detectados]
+http://www.bbc.co.uk
+
+[Imagenes detectadas]
+brushedsteel.jpg

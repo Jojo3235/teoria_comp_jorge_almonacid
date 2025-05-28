@@ -1,6 +1,6 @@
 import os
 import re
-import lexer
+import parte1.lexer as lexer
 import parser as my_parser
 from bs4 import BeautifulSoup
 import requests
