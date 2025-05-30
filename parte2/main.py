@@ -69,7 +69,7 @@ def main():
     html = obtener_html_raw(url)
     
     # Lee el HTML desde un archivo local
-    # with open("tests/prueba6.html", "r", encoding="utf-8") as f:
+    # with open("test files/prueba6.html", "r", encoding="utf-8") as f:
         # html = f.read()
 
     if not html:
