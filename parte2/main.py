@@ -64,9 +64,14 @@ def guardar_resultados(nombre, lista):
 
 # Función principal: descarga el HTML, lo analiza, imprime y guarda resultados
 def main():
-    url = "https://www.python.org"
     html = obtener_html_raw(url)
+    url = "https://www.python.org"
+    # Lee el HTML desde un archivo local
+    # with open("tests/prueba6.html", "r", encoding="utf-8") as f:
+        # html = f.read()
+
     if not html:
+        print("[ERROR] archivo vacio o no cargado")
         return
 
     analizar_con_parser(html)
@@ -90,6 +95,7 @@ def main():
         print("\nEl documento HTML esta balanceado.")
     else:
         print("\nEl documento HTML no esta balanceado.")
+
 
 # Punto de entrada del script
 if __name__ == "__main__":

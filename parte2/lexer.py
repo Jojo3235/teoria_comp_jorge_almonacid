@@ -1,75 +1,75 @@
 import ply.lex as lex
 
-# Lista de tokens que reconocerá el lexer
+# Lista de tokens necesarios para el parser
 tokens = (
-    'ABRIR_ETIQUETA',       # <etiqueta
-    'CERRAR_ETIQUETA',      # </etiqueta
-    'ETIQUETA_AUTOCIERRE',  # <etiqueta ... />
-    'FIN_ETIQUETA',         # >
-    'NOMBRE_ATRIBUTO',      # nombre de atributos como src, href, etc.
-    'IGUAL',                # =
-    'VALOR_ATRIBUTO',       # "valor"
-    'TEXTO',                # texto libre fuera de etiquetas
+    'ABRIR_ETIQUETA',
+    'CERRAR_ETIQUETA',
+    'ETIQUETA_AUTOCIERRE',
+    'FIN_ETIQUETA',
+    'NOMBRE_ATRIBUTO',
+    'IGUAL',
+    'VALOR_ATRIBUTO',
+    'TEXTO',
 )
 
-# Ignorar espacios, tabs, DOCTYPE y comentarios HTML
+# Ignorar espacios, tabs, comentarios y declaraciones DOCTYPE
 t_ignore = ' \t'
 t_ignore_DOCTYPE = r'<!DOCTYPE[^>]*>'
 t_ignore_COMMENT = r'<!--(.|\n)*?-->'
 
-# Reconocer etiquetas autoconclusivas como <img ... />
+# Etiqueta autoconclusiva: <img ... />
 def t_ETIQUETA_AUTOCIERRE(t):
-    r'<[a-zA-Z]+(?:\s+[a-zA-Z_:.-]+(?:\s*=\s*"[^"]*")?)*\s*/>'
+    r'<[a-zA-Z]+(?:\s+[a-zA-Z_:.-]+\s*=\s*"[^"]*")*\s*/\s*>'
     t.value = t.value.lower()
     return t
 
-# Reconocer etiquetas de apertura como <a, <div
+# Etiqueta de apertura: <div, <p, etc.
 def t_ABRIR_ETIQUETA(t):
     r'<[a-zA-Z]+'
     t.value = t.value.lower()
     return t
 
-# Reconocer etiquetas de cierre como </a>
+# Etiqueta de cierre: </div, </p, etc.
 def t_CERRAR_ETIQUETA(t):
     r'</[a-zA-Z]+'
     t.value = t.value.lower()
     return t
 
-# Final de etiqueta >
+# Fin de etiqueta: >
 def t_FIN_ETIQUETA(t):
     r'>'
     return t
 
-# Atributos típicos en HTML
+# Atributo de una etiqueta HTML
 def t_NOMBRE_ATRIBUTO(t):
-    r'(href|src|alt|title|width|height|target|rel|class|id|style|lang)'
+    r'[a-zA-Z_:.-]+'
     return t
 
-# Símbolo igual entre atributo y valor
+# Igual entre atributo y valor
 def t_IGUAL(t):
     r'='
     return t
 
-# Valor de un atributo entre comillas dobles
+# Valor de atributo entre comillas
 def t_VALOR_ATRIBUTO(t):
     r'"[^"]*"'
     t.value = t.value[1:-1]  # elimina las comillas
     return t
 
-# Texto fuera de etiquetas
+# Texto libre entre etiquetas
 def t_TEXTO(t):
     r'[^<]+'
     return t
 
-# Manejo de nuevas líneas
+# Contador de líneas
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += len(t.value)
 
-# Manejo de errores léxicos
+# Errores léxicos
 def t_error(t):
-    print(f"Carácter ilegal: '{t.value[0]}'")
+    print(f"Caracter ilegal: '{t.value[0]}'")
     t.lexer.skip(1)
 
-# Construcción del lexer
+# Construcción final del lexer
 lexer = lex.lex()

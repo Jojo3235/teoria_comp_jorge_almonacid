@@ -101,8 +101,8 @@ https://pyfound.blogspot.com/2025/04/congrats-loren.html
 /events/python-events/2012/
 /events/python-user-group/1997/
 /success-stories/
-/success-stories/python-seo-link-analyzer/
-/success-stories/python-seo-link-analyzer/
+/success-stories/abridging-clinical-conversations-using-python/
+/success-stories/abridging-clinical-conversations-using-python/
 /about/apps
 http://www.djangoproject.com/
 http://www.pylonsproject.org/
