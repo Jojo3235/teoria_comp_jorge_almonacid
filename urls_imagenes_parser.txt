@@ -1,0 +1,8 @@
+/static/js/libs/modernizr.js
+/static/img/python-logo.png
+//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js
+/static/js/libs/jquery-1.8.2.min.js
+//ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js
+/static/js/libs/jquery-ui-1.12.1.min.js
+/static/js/libs/masonry.pkgd.min.js
+/static/js/libs/html-includes.js

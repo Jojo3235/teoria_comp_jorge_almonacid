@@ -1,92 +1,96 @@
-import os
-import re
-import parte1.lexer as lexer
-import parser as my_parser
-from bs4 import BeautifulSoup
 import requests
+from lexer import lexer
+from parser import parser, urls_links, urls_images, encuentros_etiquetas
+import re
 from collections import Counter
 
-def extraer_urls(data):
-    lexer.lexer.input(data)
-    my_parser.parser.parse(data)
-    return my_parser.urls_links, my_parser.urls_images
+# Obtiene el HTML crudo desde una URL usando requests
+# Devuelve el contenido HTML como texto plano
+def obtener_html_raw(url):
+    try:
+        headers = {"User-Agent": "Mozilla/5.0 (compatible; WebScraper/1.0)"}
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()
+        return response.text
+    except requests.RequestException as e:
+        print(f"[ERROR] no se pudo acceder a {url}: {e}")
+        return ""
 
-
+# Comprueba si el HTML está balanceado en cuanto a etiquetas
+# Ignora etiquetas autocontenidas como <img>, <br>, etc.
 def esta_balanceado(data):
     stack = []
-    tags = re.findall(r'</?\w+[^>]*>', data)
+    autocontenidas = {'img', 'br', 'hr', 'meta', 'input', 'link', 'source', 'track', 'wbr'}
+    tags = re.findall(r'<(/?)(\w+)[^>]*>', data)
 
-    for tag in tags:
-        if not tag.startswith('</'):
-            tagname = re.match(r'<(\w+)', tag).group(1)
-            if tagname.lower() not in ['img', 'br', 'hr', 'meta', 'input']:
-                stack.append(tagname.lower())
-        else:
-            tagname = re.match(r'</(\w+)', tag).group(1)
-            if not stack or stack[-1] != tagname.lower():
+    for cierre, nombre in tags:
+        nombre = nombre.lower()
+        if nombre in autocontenidas:
+            continue
+        if cierre:
+            if not stack or stack[-1] != nombre:
                 return False
             stack.pop()
-
+        else:
+            stack.append(nombre)
     return len(stack) == 0
 
+# Procesa el HTML con el analizador léxico y sintáctico (parser)
+# Recolecta enlaces, imágenes y tipos de etiquetas presentes en el documento
+def analizar_con_parser(html):
+    urls_links.clear()
+    urls_images.clear()
+    encuentros_etiquetas.clear()
+    lexer.input(html)
+    parser.parse(html)
 
-def analizar_con_bs4(url):
-    response = requests.get(url)
-    soup = BeautifulSoup(response.content, 'html.parser')
+    # Refuerzo: detectar imágenes por expresión regular si el parser no las detecta
+    posibles_imgs = re.findall(r'<img[^>]*src="([^"]+)"', html)
+    for src in posibles_imgs:
+        if src not in urls_images:
+            urls_images.append(src)
+        encuentros_etiquetas.add('img')
 
-    links = [a.get('href') for a in soup.find_all('a', href=True)]
-    images = [img.get('src') for img in soup.find_all('img', src=True)]
+    # Refuerzo: detectar todos los tipos de etiquetas del HTML (incluso no manejadas por el parser)
+    all_tags = re.findall(r'<\/?(\w+)', html)
+    for tag in all_tags:
+        encuentros_etiquetas.add(tag.lower())
 
-    etiquetas = ['a', 'img', 'br', 'div', 'li', 'ul', 'p', 'span', 'table', 'td', 'tr']
-    conteo = Counter()
-    for tag in etiquetas:
-        conteo[tag] = len(soup.find_all(tag))
+# Guarda una lista de resultados (enlaces o imágenes) en un archivo de texto plano
+def guardar_resultados(nombre, lista):
+    with open(nombre, "w", encoding="utf-8") as f:
+        for item in lista:
+            f.write(item + "\n")
 
-    # Guardar resultados
-    with open('bs4_urls_enlaces.txt', 'w', encoding='utf-8') as f:
-        for link in links:
-            f.write(link + '\n')
-
-    with open('bs4_urls_imagenes.txt', 'w', encoding='utf-8') as f:
-        for img in images:
-            f.write(img + '\n')
-
-    print("Estadísticas de etiquetas HTML:")
-    for tag, count in conteo.items():
-        print(f"{tag}: {count}")
-
-
+# Función principal: descarga el HTML, lo analiza, imprime y guarda resultados
 def main():
-    archivo_html = 'test_page.html'
-
-    if not os.path.exists(archivo_html):
-        print(f"No se encontró el archivo {archivo_html}")
+    url = "https://www.python.org"
+    html = obtener_html_raw(url)
+    if not html:
         return
 
-    with open(archivo_html, 'r', encoding='utf-8') as f:
-        data = f.read()
+    analizar_con_parser(html)
 
-    links, images = extraer_urls(data)
+    print(f"\n[Enlaces encontrados]: {len(urls_links)}")
+    for link in urls_links:
+        print(f"  - {link}")
 
-    with open('urls_enlaces.txt', 'w', encoding='utf-8') as f:
-        for link in links:
-            f.write(link + '\n')
+    print(f"\n[Imagenes encontradas]: {len(urls_images)}")
+    for img in urls_images:
+        print(f"  - {img}")
 
-    with open('urls_imagenes.txt', 'w', encoding='utf-8') as f:
-        for img in images:
-            f.write(img + '\n')
+    print(f"\n[Tipos de etiquetas encontradas]: {len(encuentros_etiquetas)}")
+    for etq in sorted(encuentros_etiquetas):
+        print(f"  - {etq}")
 
-    print(f"Enlaces encontrados: {len(links)}")
-    print(f"Imágenes encontradas: {len(images)}")
+    guardar_resultados("urls_enlaces_parser.txt", urls_links)
+    guardar_resultados("urls_imagenes_parser.txt", urls_images)
 
-    if esta_balanceado(data):
-        print("El documento HTML está balanceado.")
+    if esta_balanceado(html):
+        print("\nEl documento HTML esta balanceado.")
     else:
-        print("El documento HTML NO está balanceado.")
+        print("\nEl documento HTML no esta balanceado.")
 
-    url_real = 'https://www.python.org'
-    analizar_con_bs4(url_real)
-
-
-if __name__ == '__main__':
+# Punto de entrada del script
+if __name__ == "__main__":
     main()
