@@ -132,8 +132,8 @@ def analizar_html(ruta_html, salida_urls):
 
 # Punto de entrada del script
 if __name__ == "__main__":
-    ruta_html = os.path.join("tests", "prueba3.html")               # Ruta al archivo de entrada
-    salida_urls = os.path.join("tests", "urls_extraidas_3.txt")     # Archivo de salida
+    ruta_html = os.path.join("test files", "prueba3.html")               # Ruta al archivo de entrada
+    salida_urls = os.path.join("test files", "urls_extraidas_3.txt")     # Archivo de salida
     print(f"Analizando archivo: {ruta_html}")
     analizar_html(ruta_html, salida_urls)
     print(f"\nURLs extraidas guardadas en: {salida_urls}")
