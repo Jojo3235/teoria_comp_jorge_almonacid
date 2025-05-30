@@ -113,8 +113,8 @@ def analizar_html(ruta_html, salida_urls):
                 print(f"  - {tag}")
 
 if __name__ == "__main__":
-    ruta_html = os.path.join("tests", "prueba4.html")
-    salida_urls = os.path.join("tests", "urls_extraidas_4.txt")
+    ruta_html = os.path.join("tests", "prueba3.html")
+    salida_urls = os.path.join("tests", "urls_extraidas_3.txt")
     print(f"Analizando archivo: {ruta_html}")
     analizar_html(ruta_html, salida_urls)
     print(f"\nURLs extraidas guardadas en: {salida_urls}")

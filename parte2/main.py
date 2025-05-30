@@ -64,8 +64,10 @@ def guardar_resultados(nombre, lista):
 
 # Función principal: descarga el HTML, lo analiza, imprime y guarda resultados
 def main():
-    html = obtener_html_raw(url)
+    
     url = "https://www.python.org"
+    html = obtener_html_raw(url)
+    
     # Lee el HTML desde un archivo local
     # with open("tests/prueba6.html", "r", encoding="utf-8") as f:
         # html = f.read()

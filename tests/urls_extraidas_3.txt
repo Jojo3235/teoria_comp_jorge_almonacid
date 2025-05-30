@@ -3,4 +3,4 @@ http://www.bbc.co.uk
 http://www.ibm.com
 
 [Imagenes detectadas]
-https://www.uspceu.com/portals/_default/skins/uspceu-multi/assets/img/logos/logo-ceu-horizontal-positivo.png
+https://www.uspceu.com/Portals/_default/skins/uspceu-multi/assets/img/logos/logo-ceu-horizontal-positivo.png
